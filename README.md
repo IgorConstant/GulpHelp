@@ -11,7 +11,7 @@ Desenvolvi esse **"help"** do Gulp para facilitar na hora de automatizar algumas
 ------------
 
 #### Instalação
-Para realizar a instalção é necessário ter o NodeJS instalado, para assim poder fazer o download das respectivas dependências. 
+:exclamation:  Para realizar a instalção é necessário ter o NodeJS instalado, para assim poder fazer o download das respectivas dependências. 
 
 **- Você pode utilizar tanto o NPM quanto o YARN**
 
@@ -23,6 +23,13 @@ yarn
 ------------
 
 #### Depedências Necessárias:
-:exclamation: npm install --global gulp-cli
-:exclamation: npm i gulp-sass
-:exclamation: npm install --save-dev gulp-connect-php
+```bash
+npm install --global gulp-cli
+npm i gulp-sass 
+npm install --save-dev gulp-connect-php 
+npm i browser-sync
+npm i gulp-autoprefixer
+npm i gulp-uglify
+npm i gulp-imagemin
+npm i gulp-concat
+```
