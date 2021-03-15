@@ -5,7 +5,7 @@
 
 Desenvolvi esse **"help"** do Gulp para facilitar na hora de automatizar algumas tarefas do Front-end.
 
-**ENG: ** I Developed this help from Gulp to make a easier tasks to automate front-end.
+**ENG:** I Developed this help from Gulp to make a easier tasks to automate front-end.
 
 
 ------------
