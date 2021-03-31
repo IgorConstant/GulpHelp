@@ -10,25 +10,23 @@ const imagemin = require('gulp-imagemin');
 
 function minImage() {
     return gulp
-        .src('assets/images')
-        .pipe(gulp.dest("Insira o caminho Destino das Imagens"))
-        .pipe(imagemin[
-            imagemin.gifsicle({ interlaced: true }),
-            imagemin.jpegtran({ progressive: true }),
-            imagemin.optipng({ optimizationLevel: 5 }),
-            imagemin.svgo({
-                plugins: [
-                    {
-                        removeViewBox: false,
-                        collapseGroups: true
-                    }
-                ]
-            })
-        ])
-
+        .src('assets/images/*')
+        .pipe(gulp.dest("assets/images/minify"))
+        .pipe(imagemin({
+            interlaced: true,
+            progressive: true,
+            optimizationLevel: 5,
+            quality: 75,
+            svgoPlugins: [
+                {
+                    removeViewBox: true
+                }
+            ]
+        }))
 }
 
-gulp.task('boradiminuir', minImage);
+gulp.task('squashimg', minImage);
+
 
 
 // Em utilização de um projeto com PHP
