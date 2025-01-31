@@ -1,107 +1,46 @@
 const gulp = require('gulp');
-const sass = require('gulp-sass');
-const autoprefixer = require('gulp-autoprefixer');
-const browserSync = require('browser-sync');
+const sass = require('gulp-sass')(require('sass'));
+const browserSync = require('browser-sync').create();
 const concat = require('gulp-concat');
 const uglify = require('gulp-uglify');
-const connect = require('gulp-connect-php');
-const imagemin = require('gulp-imagemin');
 
-
-function minImage() {
-    return gulp
-        .src('assets/images/*')
-        .pipe(gulp.dest("assets/images/minify"))
-        .pipe(imagemin({
-            interlaced: true,
-            progressive: true,
-            optimizationLevel: 5,
-            quality: 75,
-            svgoPlugins: [
-                {
-                    removeViewBox: true
-                }
-            ]
-        }))
-}
-
-gulp.task('squashimg', minImage);
-
-
-
-// Em utilização de um projeto com PHP
-function connectPHP() {
-    connect.server({}, function () {
-        browserSync({
-            proxy: '127.0.0.1:8000'
-        });
-    })
-}
-
-gulp.task('boraconectar', connectPHP);
-
-
-/** Função para Compilar Arquivos .scss **/
-function compilarSass() {
+// Compile Sass
+function styles() {
     return gulp
         .src('styles/main.scss')
         .pipe(sass({
-            outputStyle: 'compressed'
-        }))
-        .pipe(autoprefixer({
-            Browserlist: ['last 2 versions'],
-            cascade: false
-        }))
-        .pipe(gulp.dest('assets/css'))
+            outputStyle: 'compressed',
+            quietDeps: true // Isso só remove warnings relacionados a dependências do Sass
+        }).on('error', sass.logError)) // Adicione para evitar quebra por erros no Sass
+        .pipe(gulp.dest('static/css'))
         .pipe(browserSync.stream());
 }
 
-gulp.task('sass', compilarSass);
-
-
-
-/** Função para Compilar Arquivos .js **/
-function gulpJS() {
+// Concatenate & Minify JS
+function scripts() {
     return gulp.src([
-        //Insira aqui os Scripts que serão compilados.
+        '', // Insira os arquivos de extensão JS aqui
     ])
-
         .pipe(concat('main.js'))
-        .pipe(uglify('main.js'))
-        .pipe(gulp.dest('assets/js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('static/js')) // Aqui você pode ajustar o diretorio que irá salvar o arquivo comprimido
         .pipe(browserSync.stream());
 }
 
-
-gulp.task('mainjs', gulpJS);
-
-
-/** Função para Espionar Alterações no Projeto **/
-function watchproject() {
-    gulp.watch('styles/*.scss', compilarSass);
-    gulp.watch('scripts/*.js', gulpJS);
-    gulp.watch('*.php', connectPHP).on('change', function () {
-        browserSync.reload();
-    });
-}
-
-gulp.task('watch', watchproject);
-
-
-
-//Em utilização de um projeto HTML
-function browser() {
+// Watch files
+function watch() {
     browserSync.init({
         server: {
-            baseDir: "./"
+            baseDir: './'
         }
     });
+    gulp.watch('styles/*.scss', styles);
+    gulp.watch('scripts/*.js', scripts);
+    gulp.watch('*.html').on('change', browserSync.reload); // Recarrega quando HTML muda
 }
 
-//Tarefa para iniciar o Browser Sync
-gulp.task('browser-sync', browser);
-
-
-
-/** Criação da Tarefa =) That's All Folks! **/
-gulp.task('default', gulp.parallel('watch', 'sass', 'mainjs', 'browser-sync', 'boraconectar'))
+// Tasks
+gulp.task('styles', styles);
+gulp.task('scripts', scripts);
+gulp.task('watch', watch);
+gulp.task('default', gulp.parallel('styles', 'scripts', 'watch'));
